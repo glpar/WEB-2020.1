@@ -1,0 +1,28 @@
+{
+  "disciplina": [
+    {
+      "nome": "Física",
+      "curso": "Engenharia Elétrica",
+      "capacidade": 50,
+      "id": 1
+    },
+    {
+      "nome": "Matemática",
+      "curso": "Medicina",
+      "capacidade": "20",
+      "id": 2
+    },
+    {
+      "nome": "Eletromagnetismo",
+      "curso": "Engenharia Mecânica",
+      "capacidade": "60",
+      "id": 3
+    },
+    {
+      "nome": "Mecânica dos Fluidos",
+      "curso": "Engenharia de Produção",
+      "capacidade": "2",
+      "id": 4
+    }
+  ]
+}
