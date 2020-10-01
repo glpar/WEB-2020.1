@@ -11,8 +11,8 @@ export default class List extends Component {
     }
 
     componentDidMount() {
-        axios.get('http://localhost:3002/disciplinas/list')
-        /*axios.get('http://localhost:3001/disciplina')*/
+        /*axios.get('http://localhost:3002/disciplinas/list')
+        axios.get('http://localhost:3001/disciplina')
             .then(
                 (res) => {
                     this.setState({ disciplina: res.data })
@@ -22,7 +22,7 @@ export default class List extends Component {
                 (error) => {
                     console.log(error)
                 }
-            )
+            )*/
     }
     montarTabela() {
         if (!this.state.disciplina) return
