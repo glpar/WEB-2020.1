@@ -1,34 +1,52 @@
 import React, { Component } from 'react';
-import axios from 'axios'
 import TableRow from './TableRow';
+import FirebaseContext from '../utils/FirebaseContext';
 
-export default class List extends Component {
+const ListPage = () => (
+    <FirebaseContext.Consumer>
+        {contexto => <List firebase={contexto} />}
+    </FirebaseContext.Consumer>
+)
+
+class List extends Component {
 
     constructor(props) {
         super(props)
-        this.state = { disciplina: [] }
+        this.state = { disciplina: [], loading: false }
         this.apagarElementoPorId = this.apagarElementoPorId.bind(this)
     }
 
     componentDidMount() {
-        /*axios.get('http://localhost:3002/disciplinas/list')
-        axios.get('http://localhost:3001/disciplina')
-            .then(
-                (res) => {
-                    this.setState({ disciplina: res.data })
-                }
-            )
-            .catch(
-                (error) => {
-                    console.log(error)
-                }
-            )*/
+        this.setState({loading:true})
+        this.ref = this.props.firebase.getFirestore().collection('disciplinas')
+        this.ref.onSnapshot(this.alimentarDisciplinas.bind(this))
+    }
+
+    alimentarDisciplinas(query) {
+        let disciplinas = []
+        query.forEach(
+            (doc) => {
+                const { nome, curso, capacidade } = doc.data()
+                disciplinas.push(
+                    {
+                        _id: doc.id,
+                        nome,
+                        curso,
+                        capacidade,
+                    }
+                )
+            }
+        )
+        this.setState({ disciplina: disciplinas, loading:false })
     }
     montarTabela() {
         if (!this.state.disciplina) return
         return this.state.disciplina.map(
             (discip, i) => {
-                return <TableRow disciplina={discip} key={i} apagarElementoPorId={this.apagarElementoPorId}/>;
+                return <TableRow disciplina={discip} key={i}
+                    apagarElementoPorId={this.apagarElementoPorId}
+                    firebase={this.props.firebase}
+                />;
             }
         )
     }
@@ -41,6 +59,22 @@ export default class List extends Component {
         }
         this.setState({ disciplina: discipTemp })
     }
+
+    gerarConteudo() {
+        if (this.state.loading) {
+            return (
+                <tr>
+                    <td colSpan='6' style={{textAlign:"center"}}>
+                        <div className="spinner-grow" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </div>
+                    </td>
+                </tr>
+            )
+        }
+        else return this.montarTabela()
+    }
+
     render() {
         return (
             <div style={{ marginTop: 10 }}>
@@ -57,7 +91,7 @@ export default class List extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.montarTabela()}
+                        {this.gerarConteudo()}
                     </tbody>
 
                 </table>
@@ -65,3 +99,5 @@ export default class List extends Component {
         )
     }
 }
+
+export default ListPage 

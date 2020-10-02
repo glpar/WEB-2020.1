@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import axios from "axios"
+import FirebaseContext from '../utils/FirebaseContext';
 
-export default class Edit extends Component {
+const EditPage = (props) => (
+    <FirebaseContext.Consumer>
+        {contexto => <Edit firebase={contexto} id={props.match.params.id} />}
+    </FirebaseContext.Consumer>
+)
+
+class Edit extends Component {
     constructor(props) {
         super(props)
         this.state = { nome: '', curso: '', capacidade: '' }
@@ -12,16 +18,14 @@ export default class Edit extends Component {
         this.onSubmit = this.onSubmit.bind(this)
     }
     componentDidMount() {
-        axios.get('http://localhost:3002/disciplinas/retrieve/' + this.props.match.params.id)
+        this.props.firebase.getFirestore().collection('disciplinas').doc(this.props.id).get()
             .then(
-                (res) => {
-                    this.setState(
-                        {
-                            nome: res.data.nome,
-                            curso: res.data.curso,
-                            capacidade: res.data.capacidade
-                        }
-                    )
+                (doc) => {
+                    this.setState({
+                            nome: doc.data().nome,
+                            curso: doc.data().curso,
+                            capacidade: doc.data().capacidade
+                    })
                 }
             )
             .catch(
@@ -43,19 +47,17 @@ export default class Edit extends Component {
     onSubmit(e) {
         e.preventDefault() //impede que o browser faça o reload, perdendo assim a informação
 
-        const discipAtualiz =
-        {
-            nome: this.state.nome,
-            curso: this.state.curso,
-            capacidade: this.state.capacidade
-        }
-        axios.put('http://localhost:3002/disciplinas/update/' + this.props.match.params.id, discipAtualiz)
-            .then(
-                res => {
-                    this.props.history.push('/list');
-                }
-            )
-            .catch(error => console.log(error))
+        this.props.firebase.getFirestore().collection('disciplinas').doc(this.props.id).set(
+            {
+                nome: this.state.nome,
+                curso: this.state.curso,
+                capacidade: this.state.capacidade
+            }
+        )
+        .then(()=>{
+            console.log('Estudante Atualizado')
+        })
+        .catch((error)=>{console.log(error)})
     }
 
     render() {
@@ -86,3 +88,5 @@ export default class Edit extends Component {
         )
     }
 }
+
+export default EditPage
