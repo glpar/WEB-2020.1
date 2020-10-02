@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TableRow from './TableRow';
 import FirebaseContext from '../utils/FirebaseContext';
+import FirebaseService from '../services/FirebaseService'
 
 const ListPage = () => (
     <FirebaseContext.Consumer>
@@ -12,33 +13,32 @@ class List extends Component {
 
     constructor(props) {
         super(props)
+        this._isMounted = false
         this.state = { disciplina: [], loading: false }
         this.apagarElementoPorId = this.apagarElementoPorId.bind(this)
     }
 
     componentDidMount() {
-        this.setState({loading:true})
-        this.ref = this.props.firebase.getFirestore().collection('disciplinas')
-        this.ref.onSnapshot(this.alimentarDisciplinas.bind(this))
-    }
-
-    alimentarDisciplinas(query) {
-        let disciplinas = []
-        query.forEach(
-            (doc) => {
-                const { nome, curso, capacidade } = doc.data()
-                disciplinas.push(
-                    {
-                        _id: doc.id,
-                        nome,
-                        curso,
-                        capacidade,
+        this._isMounted = true
+        this.setState({ loading: true })
+        FirebaseService.list(
+            this.props.firebase.getFirestore(),
+            (disciplinas) => {
+                if (disciplinas) {
+                    if (this._isMounted) {
+                        this.setState({ disciplina: disciplinas, loading: false })
                     }
-                )
+                }
+
             }
         )
-        this.setState({ disciplina: disciplinas, loading:false })
     }
+
+    componentWillUnmount() {
+        this._isMounted = false
+    }
+
+
     montarTabela() {
         if (!this.state.disciplina) return
         return this.state.disciplina.map(
@@ -64,7 +64,7 @@ class List extends Component {
         if (this.state.loading) {
             return (
                 <tr>
-                    <td colSpan='6' style={{textAlign:"center"}}>
+                    <td colSpan='6' style={{ textAlign: "center" }}>
                         <div className="spinner-grow" role="status">
                             <span className="sr-only">Loading...</span>
                         </div>
