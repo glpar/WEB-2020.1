@@ -11,7 +11,8 @@ export default class Card extends Component {
         if (this.props.turquoise===true) return 'bg-info'
         if (this.props.light===true) return 'bg-light'
         if (this.props.dark===true) return 'bg-dark'
-        return 'bg-secondary'
+        if(this.props.grey===true) return 'bg-secondary'
+        return 'card'
     }
     getTextcolor(){
         if (this.props.tblue) return 'text-primary'
@@ -19,9 +20,8 @@ export default class Card extends Component {
         if (this.props.tred) return 'text-danger'
         if (this.props.tyellow) return 'text-warning'
         if (this.props.tturquoise) return 'text-info'
-        if (this.props.tlight) return 'text-light'
         if (this.props.tdark) return 'text-dark'
-        if (this.props.tgrey) return 'text-grey'
+        if (this.props.tgrey) return 'text-secondary'
         return 'text-light'
     }
 

@@ -4,11 +4,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { Provider } from 'react-redux';
+import storeConfig from './store/storeConfig'
 
 ReactDOM.render(
-  <React.StrictMode>
+  <Provider store = {storeConfig()}>
+    <React.StrictMode>
     <App />
-  </React.StrictMode>,
+  </React.StrictMode>
+  </Provider>,
   document.getElementById('root')
 );
 

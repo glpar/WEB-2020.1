@@ -1,0 +1,16 @@
+@import "https://fonts.googleapis.com/css?family=Lato.100";
+
+.numero1 button{
+    font-size: 1.2rem;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.numero1 input{
+    color: black;
+    background-color: rgba(255, 255, 255, 0.4);
+    width: 100px;
+    margin-left: 5px;
+    font-weight: bold;
+    border-color: rgba(128, 128, 128, 0.3);
+}
