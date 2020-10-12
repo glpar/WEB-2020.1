@@ -7,8 +7,9 @@ import Create from './components/Create';
 import Edit from './components/Edit';
 import List from './components/List';
 import Home from './components/Home';
+import {connect} from 'react-redux'
 
-export default class App extends Component {
+class App extends Component {
  render() {
  return (
  <Router>
@@ -33,6 +34,7 @@ export default class App extends Component {
         <Link to={'/list'} className="nav-link">List</Link>
       </li>
     </ul>
+    {this.props.userLogado}
   </div>
  </nav>
 
@@ -52,3 +54,9 @@ export default class App extends Component {
  );
  }
 }
+function mapStateToProps(state){
+  return{
+    userLogado: state.authReducer.user
+  }
+}
+export default connect(mapStateToProps)(App)
